@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, DependencyList } from "react"
 export enum Status {
     "pending",
     "fulfilled",
@@ -17,6 +17,7 @@ export interface UseAsyncStateOptions<S> {
     initialState: S;
     loader: AsyncStateLoader<S>;
     reloadOnMounted?: boolean
+    deps?: DependencyList
     onError?: (reason: any) => void;
 }
 export interface ReturnValue<S> {
@@ -41,14 +42,14 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
             options.onError && options.onError(err);
             statusSetter(Status.rejected);
         }
-    }, [options.loader, stateSetter, statusSetter, options.onError]);
+    }, [options.loader, stateSetter, statusSetter, options.onError,...(options.deps ?? [])]);
 
     useEffect(() => {
         if (options.reloadOnMounted === false) {
             return
         }
         fn();
-    }, [options.reloadOnMounted, fn]);
+    }, [options.reloadOnMounted, fn,...(options.deps ?? [])]);
 
     return {
         state,
