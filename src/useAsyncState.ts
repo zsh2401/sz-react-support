@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react"
 export enum Status {
     "pending",
-    "fullfilled",
+    "fulfilled",
     "rejected"
 }
-export interface AsyncStateProvider<S> {
-    (): Promise<S>;
+export interface AsyncStateLoader<S> {
+    (): Promise<S> | S;
 }
 export interface Reloader {
     (): void;
@@ -15,7 +15,8 @@ export interface StateSetter<S> {
 }
 export interface UseAsyncStateOptions<S> {
     initialState: S;
-    provider: AsyncStateProvider<S>;
+    loader: AsyncStateLoader<S>;
+    reloadOnMounted?: boolean
     onError?: (reason: any) => void;
 }
 export interface ReturnValue<S> {
@@ -33,18 +34,21 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
 
     const fn = useCallback(async () => {
         try {
-            const data = await options.provider();
+            const data = await options.loader();
             stateSetter(data);
-            statusSetter(Status.fullfilled);
+            statusSetter(Status.fulfilled);
         } catch (err) {
             options.onError && options.onError(err);
             statusSetter(Status.rejected);
         }
-    }, [options.provider, stateSetter, statusSetter, options.onError]);
+    }, [options.loader, stateSetter, statusSetter, options.onError]);
 
     useEffect(() => {
+        if (options.reloadOnMounted === false) {
+            return
+        }
         fn();
-    }, []);
+    }, [options.reloadOnMounted, fn]);
 
     return {
         state,
