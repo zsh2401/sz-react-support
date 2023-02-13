@@ -1,6 +1,6 @@
 {
   "name": "sz-react-support",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Seymour Zhang's React Supporting Library",
   "main": "dist/index.js",
   "author": "zsh2401@163.com",
