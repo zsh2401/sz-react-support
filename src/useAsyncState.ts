@@ -42,7 +42,7 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
             options.onError && options.onError(err);
             statusSetter(Status.rejected);
         }
-    }, [options.loader, stateSetter, statusSetter, options.onError,...(options.deps ?? [])]);
+    }, [stateSetter, statusSetter, options.onError,...(options.deps ?? [])]);
 
     useEffect(() => {
         if (options.reloadOnMounted === false) {
