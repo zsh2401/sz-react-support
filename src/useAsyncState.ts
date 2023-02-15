@@ -7,8 +7,8 @@ export enum Status {
 export interface AsyncStateLoader<S> {
     (): Promise<S> | S;
 }
-export interface Reloader {
-    (): void;
+export interface Reloader<S> {
+    (): Promise<S>;
 }
 export interface StateSetter<S> {
     (newState: S): void;
@@ -16,6 +16,9 @@ export interface StateSetter<S> {
 export interface UseAsyncStateOptions<S> {
     initialState: S;
     loader: AsyncStateLoader<S>;
+    /**
+     * @default false
+     */
     reloadOnMounted?: boolean
     deps?: DependencyList
     onError?: (reason: any) => void;
@@ -23,7 +26,7 @@ export interface UseAsyncStateOptions<S> {
 export interface ReturnValue<S> {
     state: S;
     loadingStatus: Status;
-    reload: Reloader;
+    reload: Reloader<S>;
     setter: StateSetter<S>;
 }
 export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
@@ -38,18 +41,19 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
             const data = await options.loader();
             stateSetter(data);
             statusSetter(Status.fulfilled);
+            return data
         } catch (err) {
             options.onError && options.onError(err);
             statusSetter(Status.rejected);
+            throw err
         }
-    }, [stateSetter, statusSetter, options.onError,...(options.deps ?? [])]);
+    }, options.deps ?? []);
 
     useEffect(() => {
-        if (options.reloadOnMounted === false) {
-            return
+        if (options.reloadOnMounted) {
+            fn()
         }
-        fn();
-    }, [options.reloadOnMounted, fn,...(options.deps ?? [])]);
+    }, [fn,...(options.deps ?? [])]);
 
     return {
         state,
