@@ -53,7 +53,7 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
         if (options.reloadOnMounted) {
             fn()
         }
-    }, [fn,...(options.deps ?? [])]);
+    }, [fn]);
 
     return {
         state,

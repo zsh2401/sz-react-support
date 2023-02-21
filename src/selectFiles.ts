@@ -19,7 +19,11 @@ export default async function (_options?: SelectFileOptions): Promise<FileList> 
         el.accept = options.accept
         el.multiple = options.multiple
         el.addEventListener('change', _ => {
-            res(el.files!);
+            if(el.files && el.files.length > 0){
+                res(el.files);
+            }else{
+                rej("No files selected")
+            }
         })
         el.click()
     })
