@@ -17,7 +17,7 @@
     "build:commonjs": "tsc",
     "build:es":"tsc -p ./tsconfig.es.json",
     "build":"pnpm build:commonjs && pnpm build:es",
-    "release": "npm run build  && npm version patch && npm publish"
+    "release": "npm run build && npm publish"
   },
   "peerDependencies": {
     "react": "^16.0.0 || ^17.0.0 || ^18.0.0"

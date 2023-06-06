@@ -52,7 +52,10 @@ export function useAsyncState<A, S>(options: UseAsyncStateOptions<A, S>):
     const [firstTime, setFirstTime] = useState(true)
 
     useEffect(() => {
-        if (firstTime && options.reloadOnMounted) {
+        if (options.reloadOnMounted && firstTime) {
+            fn()
+            setFirstTime(false)
+        } else if (!firstTime) {
             fn()
             setFirstTime(false)
         }
