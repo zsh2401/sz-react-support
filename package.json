@@ -12,7 +12,9 @@
     "typescript": "^5.1.3"
   },
   "scripts": {
-    "build": "tsc",
+    "build:commonjs": "tsc",
+    "build:es":"tsc -p ./tsconfig.es.json",
+    "build":"pnpm build:commonjs && pnpm build:es",
     "release": "npm run build  && npm version patch && npm publish"
   },
   "peerDependencies": {
