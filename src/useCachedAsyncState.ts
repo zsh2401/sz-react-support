@@ -6,11 +6,11 @@ import {
 import lf from 'localforage'
 import { useEffect, useMemo } from 'react'
 import { useState } from 'react'
-export default function <A, S>(
+export function useCachedAsyncState<A, S>(
     key: string,
     options: UseAsyncStateOptions<A, S>
 ): ReturnValue<A, S> {
-    
+
     const _key = useMemo(() => {
         return `__${key}`
     }, [key])
