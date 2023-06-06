@@ -16,5 +16,8 @@
   },
   "peerDependencies": {
     "react": "^16.0.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "localforage": "^1.10.0"
   }
 }

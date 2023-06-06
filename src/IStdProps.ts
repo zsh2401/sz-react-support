@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react'
-export default interface IStdProps
+export interface IStdProps
     extends React.DetailedHTMLProps<HTMLAttributes<HTMLDivElement>,
     HTMLDivElement> {
 }

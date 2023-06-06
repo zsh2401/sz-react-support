@@ -4,18 +4,18 @@ export enum Status {
     "fulfilled",
     "rejected"
 }
-export interface AsyncStateLoader<S> {
-    (): Promise<S> | S;
+export interface AsyncStateLoader<A, S> {
+    (args?: Partial<A>): Promise<S> | S;
 }
-export interface Reloader<S> {
-    (): Promise<S>;
+export interface Reloader<A, S> {
+    (args?: Partial<A>): Promise<S>;
 }
 export interface StateSetter<S> {
     (newState: S): void;
 }
-export interface UseAsyncStateOptions<S> {
+export interface UseAsyncStateOptions<A, S> {
     initialState: S;
-    loader: AsyncStateLoader<S>;
+    loader: AsyncStateLoader<A, S>;
     /**
      * @default false
      */
@@ -23,22 +23,22 @@ export interface UseAsyncStateOptions<S> {
     deps?: DependencyList
     onError?: (reason: any) => void;
 }
-export interface ReturnValue<S> {
+export interface ReturnValue<A, S> {
     state: S;
     loadingStatus: Status;
-    reload: Reloader<S>;
+    reload: Reloader<A, S>;
     setter: StateSetter<S>;
 }
-export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
-    ReturnValue<S> {
+export function useAsyncState<A, S>(options: UseAsyncStateOptions<A, S>):
+    ReturnValue<A, S> {
 
     const [state, stateSetter] = useState<S>(options.initialState);
 
     const [status, statusSetter] = useState<Status>(Status.pending);
 
-    const fn = useCallback(async () => {
+    const fn = useCallback(async (args?: Partial<A>) => {
         try {
-            const data = await options.loader();
+            const data = await options.loader(args);
             stateSetter(data);
             statusSetter(Status.fulfilled);
             return data
@@ -49,11 +49,18 @@ export default function useAsyncState<S>(options: UseAsyncStateOptions<S>):
         }
     }, options.deps ?? []);
 
+    const [firstTime, setFirstTime] = useState(true)
+
     useEffect(() => {
-        if (options.reloadOnMounted) {
+        if (firstTime && options.reloadOnMounted) {
             fn()
+            setFirstTime(false)
         }
-    }, [fn]);
+    }, [fn, firstTime])
+
+    useEffect(() => {
+        fn()
+    }, []);
 
     return {
         state,

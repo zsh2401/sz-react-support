@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-export default function () {
+export function useId() {
     const [id] = useState(() => allocate())
     useEffect(() => {
         return () => {

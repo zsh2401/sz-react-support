@@ -2,7 +2,7 @@ export interface SelectFileOptions {
     accept?: string;
     multiple?: boolean;
 }
-export default async function (_options?: SelectFileOptions): Promise<FileList> {
+export async function selectFiles(_options?: SelectFileOptions): Promise<FileList> {
     return new Promise((res, rej) => {
         let options = {
             accept: 'image/*',
@@ -19,9 +19,9 @@ export default async function (_options?: SelectFileOptions): Promise<FileList> 
         el.accept = options.accept
         el.multiple = options.multiple
         el.addEventListener('change', _ => {
-            if(el.files && el.files.length > 0){
+            if (el.files && el.files.length > 0) {
                 res(el.files);
-            }else{
+            } else {
                 rej("No files selected")
             }
         })
