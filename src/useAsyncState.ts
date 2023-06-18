@@ -21,6 +21,13 @@ export interface UseAsyncStateOptions<A, S> {
      */
     reloadOnMounted?: boolean
     deps?: DependencyList
+
+    /**
+     * 
+     * @deprecated Unsure update behaviour.
+     * @param reason 
+     * @returns 
+     */
     onError?: (reason: any) => void;
 }
 export interface ReturnValue<A, S> {
@@ -36,9 +43,10 @@ export function useAsyncState<A, S>(options: UseAsyncStateOptions<A, S>):
 
     const [status, statusSetter] = useState<Status>(Status.pending);
 
+    const rawCachedFn = useCallback(options.loader, [...(options.deps ?? [])])
     const fn = useCallback(async (args?: Partial<A>) => {
         try {
-            const data = await options.loader(args);
+            const data = await rawCachedFn(args);
             stateSetter(data);
             statusSetter(Status.fulfilled);
             return data
@@ -47,7 +55,7 @@ export function useAsyncState<A, S>(options: UseAsyncStateOptions<A, S>):
             statusSetter(Status.rejected);
             throw err
         }
-    }, options.deps ?? []);
+    }, [...(options.deps ?? []), rawCachedFn]);
 
     const [firstTime, setFirstTime] = useState(true)
 
@@ -61,9 +69,9 @@ export function useAsyncState<A, S>(options: UseAsyncStateOptions<A, S>):
         }
     }, [fn, firstTime])
 
-    useEffect(() => {
-        fn()
-    }, []);
+    // useEffect(() => {
+    //     fn()
+    // }, []);
 
     return {
         state,
