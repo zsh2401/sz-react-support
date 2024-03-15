@@ -30,7 +30,7 @@ export function useClassEvent<E extends object>(
     return useEvent(key, listener)
 }
 
-export function useEvent<E extends object>(
+export function useEvent<E>(
     eventKey: string,
     listener?: Listener<E>
 ): Trigger<E> {
