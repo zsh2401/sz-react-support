@@ -13,17 +13,17 @@ export interface Trigger<E> {
     (event: E): void
 }
 const map: Map<Class<any>, string> = new Map()
-export default function useEvent<E extends object>(
-    objectClass: Class<E>,
+export function useEvent<E extends object>(
+    eventClass: Class<E>,
     listener?: Listener<E>
 ): Trigger<E> {
     const context = useContext(ClassEventContext)
     const randomId = useMemo(() => {
-        if (!map.has(objectClass)) {
-            map.set(objectClass, v4())
+        if (!map.has(eventClass)) {
+            map.set(eventClass, v4())
         }
-        return map.get(objectClass)!
-    }, [objectClass])
+        return map.get(eventClass)!
+    }, [eventClass])
 
     useEffect(() => {
         if (!listener) {
