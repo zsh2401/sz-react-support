@@ -37,7 +37,7 @@ export function DarkModeProvider(props: OnlyChildrenProps) {
     // Applying changes to HTML document
     // when dark mode changed to a valid value.
     useEffect(() => {
-        if (!darkMode) {
+        if (darkMode === null) {
             return
         } else {
             setAppDarkMode(darkMode)
