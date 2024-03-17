@@ -2,11 +2,19 @@ export interface SelectFileOptions {
     accept?: string;
     multiple?: boolean;
 }
+/**
+ * Show a modern browser dialog to 
+ * request user to select file(s)
+ * with certain type(s).
+ * @author zsh2401
+ * @param _options 
+ * @returns 
+ */
 export async function selectFiles(_options?: SelectFileOptions): Promise<FileList> {
     return new Promise((res, rej) => {
         let options = {
-            accept: 'image/*',
-            multiple: true
+            accept: '*/*',
+            multiple: false
         }
 
         if (_options) {
