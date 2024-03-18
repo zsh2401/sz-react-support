@@ -12,7 +12,7 @@ import { DarkModeContext } from "./DarkModeProvider";
  * @author zsh2401
  * @returns 
  */
-export function useDarkMode() {
+export function useDarkMode(): [boolean, React.Dispatch<boolean>] {
     const context = useContext(DarkModeContext)
     return [context.darkMode, (value: boolean) => context.darkMode = value]
 }
