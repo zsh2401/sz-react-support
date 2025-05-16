@@ -13,25 +13,27 @@ export interface SelectFileOptions {
 export async function selectFiles(_options?: SelectFileOptions): Promise<FileList> {
     return new Promise((res, rej) => {
         let options = {
-            accept: '*/*',
-            multiple: false
-        }
-
-        if (_options) {
-            options.accept = _options.accept ?? options.accept;
-            options.multiple = _options.multiple ?? options.multiple;
+            accept: _options?.accept ?? '*/*',
+            multiple: _options?.multiple ?? false
         }
 
         const el = document.createElement('input')
+        el.value = ""
+        el.style.position = 'fixed';
+        el.style.top      = '0';
+        el.style.left     = '-9999px';
+        document.body.appendChild(el);
         el.type = 'file'
         el.accept = options.accept
         el.multiple = options.multiple
+        // el.capture = ""
         el.addEventListener('change', _ => {
             if (el.files && el.files.length > 0) {
                 res(el.files);
             } else {
                 rej("No files selected")
             }
+            document.body.removeChild(el)
         })
         el.click()
     })

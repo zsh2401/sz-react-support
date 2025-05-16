@@ -11,12 +11,13 @@
     "@types/react": "^18.2.66",
     "@types/uuid": "^9.0.8",
     "react": "^18.2.0",
+    "rimraf": "^6.0.1",
     "typescript": "^5.4.2"
   },
   "scripts": {
     "build:commonjs": "tsc",
-    "build:es":"tsc -p ./tsconfig.es.json",
-    "build":"pnpm build:commonjs && pnpm build:es",
+    "build:es": "tsc -p ./tsconfig.es.json",
+    "build": "pnpm build:commonjs && pnpm build:es",
     "release": "npm run build && npm publish"
   },
   "peerDependencies": {
